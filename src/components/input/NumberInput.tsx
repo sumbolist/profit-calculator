@@ -28,22 +28,26 @@ export default function NumberInput({
     [maxLength, onChange, normalize]
   );
   return (
-    <div className="input">
+    <>
       {label && (
-        <label>
-          {labelValue}
-          {labelPostfix && (
-            <span style={{ fontSize: "70%" }}>&nbsp;{labelPostfix}</span>
-          )}
-        </label>
+        <>
+          <label>
+            {labelValue}
+            {labelPostfix && (
+              <span style={{ fontSize: "70%" }}>&nbsp;{labelPostfix}</span>
+            )}
+          </label>
+          <br />
+        </>
       )}
       <input
+        className="input"
         value={value}
         name="startBalance"
         type="number"
         maxLength={maxLength}
         onChange={(e) => handleChange(e.target.value)}
       />
-    </div>
+    </>
   );
 }

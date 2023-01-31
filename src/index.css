@@ -8,6 +8,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #131722;
   color: white;
+  box-sizing: border-box;
 }
 
 code {
@@ -30,6 +31,8 @@ input[type="number"] {
 .card {
   width: 20vw;
   margin: 0 auto;
+  padding: 1.25rem;
+  background-color: #1e222d;
 }
 
 .input-container {
@@ -37,9 +40,7 @@ input[type="number"] {
   flex-direction: column;
 }
 
-.input > input {
-  display: flex;
-  flex-direction: column;
+.input {
   margin-top: 6px;
   margin-bottom: 12px;
   padding: 0.575rem 0.75rem;
@@ -67,4 +68,14 @@ input[type="number"] {
 
 .space-between {
   justify-content: space-between;
+}
+
+#submitButton {
+  background-color: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  color: white;
+  font-weight: 600;
+  padding: 10px 25px;
+  cursor: pointer;
 }

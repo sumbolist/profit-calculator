@@ -47,7 +47,9 @@ function App() {
   );
   const getNetProfit = useCallback(
     (outcome: Outcome, posStartBalance: number, posEndBalance: number) => {
-      let netProfit = posEndBalance;
+      if (!!!marketOrderFee) {
+        return { netProfit: posEndBalance, feesPaid: 0 };
+      }
       let openPosFee = 0;
       let closePosFee = 0;
 
@@ -55,14 +57,15 @@ function App() {
         openPosFee += (posStartBalance * marketOrderFee) / 100;
       else if (!!limitOrderFee)
         openPosFee += (posStartBalance * limitOrderFee) / 100;
-      netProfit -= openPosFee;
 
-      if (outcome === "win") closePosFee = (netProfit * limitOrderFee) / 100;
-      else closePosFee = (netProfit * marketOrderFee) / 100;
-      netProfit -= closePosFee;
+      if (outcome === "win")
+        closePosFee = (posEndBalance * limitOrderFee) / 100;
+      else closePosFee = (posEndBalance * marketOrderFee) / 100;
 
+      const feesPaid = openPosFee + closePosFee;
+      const netProfit = posEndBalance - (feesPaid >= 1 ? feesPaid : 1);
       const result = {
-        feesPaid: openPosFee + closePosFee,
+        feesPaid: feesPaid >= 1 ? feesPaid : 1,
         netProfit: Number(netProfit),
       };
       return result;
@@ -97,7 +100,7 @@ function App() {
         newTrades.push({
           outcome,
           balance: Math.floor(Number(balance)),
-          feesPaid,
+          feesPaid: feesPaid.toFixed(2),
         });
       }
       setTrades(newTrades);
@@ -175,22 +178,31 @@ function App() {
           </div>
         </form>
         {!!trades.length && (
-          <div className="card trade-table">
-            {trades.map(({ outcome, balance, feesPaid }) => (
-              <div className="flex-row space-between">
-                <span
-                  style={{
-                    textTransform: "capitalize",
-                    color: outcome === "win" ? "green" : "red",
-                  }}
-                >
-                  {outcome}
-                </span>
-                <span>{feesPaid}</span>
-                <span>{balance}</span>
-              </div>
-            ))}
-          </div>
+          <table style={{ width: "100%", marginTop: 20, textAlign: "center" }}>
+            <thead>
+              <tr>
+                <th>Outcome</th>
+                <th>Fee</th>
+                <th>New Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {trades.map(({ outcome, balance, feesPaid }) => (
+                <tr>
+                  <td
+                    style={{
+                      textTransform: "capitalize",
+                      color: outcome === "win" ? "green" : "red",
+                    }}
+                  >
+                    {outcome}
+                  </td>
+                  <td>{feesPaid}</td>
+                  <td>{balance}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </div>
